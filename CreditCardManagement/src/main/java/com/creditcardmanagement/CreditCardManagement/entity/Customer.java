@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Customer {
 
-    private String _id;
+    //private String _id;
     @Id
     private long customerID =-1;
     private String first;

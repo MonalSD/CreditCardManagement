@@ -24,10 +24,16 @@ public class CustomerRestController
     @Autowired
     private CustomerService customerService;
 
-    @RequestMapping(path = "/customer/greet/get", method = RequestMethod.GET)
-    public String greet()
+//    @RequestMapping(path = "/customer/greet/get", method = RequestMethod.GET)
+//    public String greet()
+//    {
+//        return "Hey";
+//    }
+
+    @RequestMapping(path ="/get",method = RequestMethod.GET)
+    public List<Customer> findAllCustomer()
     {
-        return "Hey";
+        return this.customerService.getAllCustomer();
     }
 
     @GetMapping("/{customerID}")
