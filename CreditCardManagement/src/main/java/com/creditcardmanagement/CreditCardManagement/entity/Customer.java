@@ -1,14 +1,12 @@
 package com.creditcardmanagement.CreditCardManagement.entity;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
 @Document
 public class Customer {
     @Id
-    private long _id;
+    private String _id;
     private long customerID;
     private String first;
     private String last;
@@ -16,7 +14,10 @@ public class Customer {
     private String job;
     private String dob;
 
-    public Customer(long _id,long customerID, String first, String last, String gender, String job, String dob)
+    public Customer() {
+    }
+
+    public Customer(String _id, long customerID, String first, String last, String gender, String job, String dob)
     {
         this._id = _id;
         this.customerID = customerID;
@@ -27,11 +28,11 @@ public class Customer {
         this.dob = dob;
     }
 
-    public long get_id() {
+    public String get_id() {
         return _id;
     }
 
-    public void set_id(long _id) {
+    public void set_id(String _id) {
         this._id = _id;
     }
 

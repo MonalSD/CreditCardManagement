@@ -19,7 +19,7 @@ public class CreditCardManagementApplication {
 		try
 		{
 			System.out.println(employeeService.addCustomer(
-					new Customer(3553,89,"Shalini","Singh","F","SDE","2000/09/02")));
+					new Customer("3553",89,"Shalini","Singh","F","SDE","2000/09/02")));
 		}
 		catch (RecordExistsException e)
 		{
@@ -30,7 +30,7 @@ public class CreditCardManagementApplication {
 
 		try
 		{
-			System.out.println(employeeService.getCustomerId(89));
+			System.out.println(employeeService.getCustomerId("64d351996d8633aa94378dfe"));
 		}
 		catch (RecordNotFoundException e)
 		{

@@ -6,6 +6,7 @@ import com.creditcardmanagement.CreditCardManagement.exception.RecordNotFoundExc
 import com.creditcardmanagement.CreditCardManagement.repo.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,14 +22,14 @@ public class CustomerService {
 
 
     public Customer addCustomer(Customer customer) throws RecordExistsException {
-        if (customerRepository.existsById(customer.getCustomerID()))
+        if (customerRepository.existsById(String.valueOf(customer.getCustomerID())))
             throw new RecordExistsException("Employee with " + customer.getCustomerID() + " already exists");
         Customer saveEntity = this.customerRepository.save(customer);
         return saveEntity;
     }
 
-    public Customer getCustomerId(long custid) throws RecordNotFoundException {
-        Optional<Customer> optCust = customerRepository.findById(custid);
+    public Customer getCustomerId(String custid) throws RecordNotFoundException {
+        Optional<Customer> optCust = customerRepository.findById(String.valueOf(custid));
         if (optCust.isPresent())
             return optCust.get();
         throw new RecordNotFoundException("Employee with " + custid + " does not exists");
@@ -39,7 +40,7 @@ public class CustomerService {
     }
 
     public Customer updateCustomer(Customer customer) throws RecordNotFoundException {
-        Optional<Customer> customerDb = this.customerRepository.findById(customer.getCustomerID());
+        Optional<Customer> customerDb = this.customerRepository.findById(String.valueOf(customer.getCustomerID()));
         if (customerDb.isPresent()) {
             Customer customerUpdate = customerDb.get();
             customerUpdate.setCustomer_id(customer.getCustomerID());
@@ -56,7 +57,7 @@ public class CustomerService {
     }
 
     public void deleteCustomer(long customerID) throws RecordNotFoundException {
-        Optional<Customer> customerDb = this.customerRepository.findById(customerID);
+        Optional<Customer> customerDb = this.customerRepository.findById(String.valueOf(customerID));
 
         if (customerDb.isPresent()) {
             this.customerRepository.delete(customerDb.get());
