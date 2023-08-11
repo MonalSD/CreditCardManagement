@@ -5,9 +5,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class Customer {
-    @Id
+
     private String _id;
-    private long customerID;
+    @Id
+    private long customerID =-1;
     private String first;
     private String last;
     private String gender;
@@ -15,11 +16,10 @@ public class Customer {
     private String dob;
 
     public Customer() {
+        // Empty no-arg constructor.
     }
 
-    public Customer(String _id, long customerID, String first, String last, String gender, String job, String dob)
-    {
-        this._id = _id;
+    public Customer(int customerID, String first, String last, String gender, String job, String dob) {
         this.customerID = customerID;
         this.first = first;
         this.last = last;
@@ -27,20 +27,20 @@ public class Customer {
         this.job = job;
         this.dob = dob;
     }
+    public Customer(String first, String last, String gender, String job, String dob) {
 
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
+        this.first = first;
+        this.last = last;
+        this.gender = gender;
+        this.job = job;
+        this.dob = dob;
     }
 
     public long getCustomerID() {
         return customerID;
     }
 
-    public void setCustomer_id(long customerID) {
+    public void setCustomerID(long customerID) {
         this.customerID = customerID;
     }
 
@@ -86,15 +86,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "_id=" + _id +
-                ", customerID=" + customerID +
-                ", first='" + first + '\'' +
-                ", last='" + last + '\'' +
-                ", gender='" + gender + '\'' +
-                ", job='" + job + '\'' +
-                ", dob=" + dob +
-                '}';
+        return String.format("Customer [customerID=%s, first=%s, last=%s, gender=%s, job=%s, dob=%s]", customerID, first, last, gender, job, dob);
     }
 }
 

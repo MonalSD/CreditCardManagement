@@ -16,54 +16,41 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public long getCustomerCount() {
-        return customerRepository.count();
+    // Insert an employee.
+    public Customer insertCustomer(Customer customer) throws RecordExistsException {
+        if(customerRepository.existsById(customer.getCustomerID()))
+            throw new RecordExistsException("Customer with "+customer.getCustomerID()+"already exists");
+        long count = this.customerRepository.count();
+        customer.setCustomerID(count+1);
+        Customer savedCustomer = customerRepository.save(customer);
+        System.out.printf("There are now %d employees\n", customerRepository.count());
+        return  savedCustomer;
     }
 
-
-    public Customer addCustomer(Customer customer) throws RecordExistsException {
-        if (customerRepository.existsById(String.valueOf(customer.getCustomerID())))
-            throw new RecordExistsException("Employee with " + customer.getCustomerID() + " already exists");
-        Customer saveEntity = this.customerRepository.save(customer);
-        return saveEntity;
-    }
-
-    public Customer getCustomerId(String custid) throws RecordNotFoundException {
-        Optional<Customer> optCust = customerRepository.findById(String.valueOf(custid));
-        if (optCust.isPresent())
-            return optCust.get();
-        throw new RecordNotFoundException("Employee with " + custid + " does not exists");
-    }
-
-    public List<Customer> getAllCustomers() {
+    // Get all employees.
+    public List<Customer> getAllCustomer()
+    {
         return this.customerRepository.findAll();
     }
-
-    public Customer updateCustomer(Customer customer) throws RecordNotFoundException {
-        Optional<Customer> customerDb = this.customerRepository.findById(String.valueOf(customer.getCustomerID()));
-        if (customerDb.isPresent()) {
-            Customer customerUpdate = customerDb.get();
-            customerUpdate.setCustomer_id(customer.getCustomerID());
-            customerUpdate.setFirst(customer.getFirst());
-            customerUpdate.setLast(customer.getLast());
-            customerUpdate.setGender(customer.getGender());
-            customerUpdate.setJob(customer.getJob());
-            customerUpdate.setDob(customer.getDob());
-            customerRepository.save(customerUpdate);
-            return customerUpdate;
-        } else {
-            throw new RecordNotFoundException("Record not found with id : " + customer.getCustomerID());
-        }
+    public Customer getCustomerById(long custid) throws RecordNotFoundException {
+        return customerRepository.findById(custid)
+                .orElseThrow(()->new RecordNotFoundException("Customer with "+custid+" does not exist"));
     }
 
-    public void deleteCustomer(long customerID) throws RecordNotFoundException {
-        Optional<Customer> customerDb = this.customerRepository.findById(String.valueOf(customerID));
+    //Update Customer
+    public void updateCustomer( Customer custToUpdate) throws RecordNotFoundException {
+        System.out.println("UPDATE "+custToUpdate.getCustomerID());
+        if(! customerRepository.existsById(custToUpdate.getCustomerID()))
+            throw new RecordNotFoundException("Customer with "+custToUpdate.getCustomerID()+" does not exist");
+        customerRepository.save(custToUpdate);
+    }
 
-        if (customerDb.isPresent()) {
-            this.customerRepository.delete(customerDb.get());
-        } else {
-            throw new RecordNotFoundException("Record not found with id : " + customerID);
-        }
+    //Delete Customer
+    public void deleteCustomer(long customerID) throws RecordNotFoundException {
+
+        if(customerRepository.existsById(customerID))
+            throw new RecordNotFoundException("employee with "+customerID+" does not exist");
+        customerRepository.deleteById(customerID);
     }
 }
 
