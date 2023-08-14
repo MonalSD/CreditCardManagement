@@ -5,6 +5,7 @@ import com.creditcardmanagement.CreditCardManagement.exception.RecordExistsExcep
 import com.creditcardmanagement.CreditCardManagement.exception.RecordNotFoundException;
 import com.creditcardmanagement.CreditCardManagement.service.CustomerService;
 import com.creditcardmanagement.CreditCardManagement.utility.StatusMessages;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,11 +38,11 @@ public class CustomerRestController
     }
 
     @GetMapping("/{customerID}")
-    public Customer getCustomerByID(@PathVariable long customerID)
+    public Customer getCustomerByID(@PathVariable ObjectId id)
     {
         try
         {
-            return this.customerService.getCustomerById(customerID);
+            return this.customerService.getCustomerById(id);
         }
         catch(RecordNotFoundException e)
         {
@@ -74,12 +75,12 @@ public class CustomerRestController
     }
 
     @DeleteMapping("/{customerID}")
-    public ResponseEntity<Object> deleteEmployeeById(@PathVariable long customerID)
+    public ResponseEntity<Object> deleteEmployeeById(@PathVariable ObjectId id)
     {
         Map<StatusMessages , String> map = new HashMap<>();
         try {
             map.put(StatusMessages.SUCCESS, "Employee deleted successfully");
-            this.customerService.deleteCustomer(customerID);
+            this.customerService.deleteCustomer(id);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(map);
         } catch (RecordNotFoundException e) {
             map.put(StatusMessages.FAILURE, e.getMessage());

@@ -4,9 +4,11 @@ import com.creditcardmanagement.CreditCardManagement.entity.Customer;
 import com.creditcardmanagement.CreditCardManagement.exception.RecordExistsException;
 import com.creditcardmanagement.CreditCardManagement.exception.RecordNotFoundException;
 import com.creditcardmanagement.CreditCardManagement.repo.CustomerRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.ObjectError;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +20,7 @@ public class CustomerService {
 
     // Insert an employee.
     public Customer insertCustomer(Customer customer) throws RecordExistsException {
-        if(customerRepository.existsById(customer.getCustomerID()))
+        if(customerRepository.existsById(customer.getId()))
             throw new RecordExistsException("Customer with "+customer.getCustomerID()+"already exists");
         long count = this.customerRepository.count();
         customer.setCustomerID(count+1);
@@ -32,25 +34,25 @@ public class CustomerService {
     {
         return this.customerRepository.findAll();
     }
-    public Customer getCustomerById(long custid) throws RecordNotFoundException {
-        return customerRepository.findById(custid)
-                .orElseThrow(()->new RecordNotFoundException("Customer with "+custid+" does not exist"));
+    public Customer getCustomerById(ObjectId id) throws RecordNotFoundException {
+        return customerRepository.findById(id)
+                .orElseThrow(()->new RecordNotFoundException("Customer with "+id+" does not exist"));
     }
 
     //Update Customer
     public void updateCustomer( Customer custToUpdate) throws RecordNotFoundException {
-        System.out.println("UPDATE "+custToUpdate.getCustomerID());
-        if(! customerRepository.existsById(custToUpdate.getCustomerID()))
-            throw new RecordNotFoundException("Customer with "+custToUpdate.getCustomerID()+" does not exist");
+        System.out.println("UPDATE "+custToUpdate.getId());
+        if(! customerRepository.existsById(custToUpdate.getId()))
+            throw new RecordNotFoundException("Customer with "+custToUpdate.getId()+" does not exist");
         customerRepository.save(custToUpdate);
     }
 
     //Delete Customer
-    public void deleteCustomer(long customerID) throws RecordNotFoundException {
+    public void deleteCustomer(ObjectId id) throws RecordNotFoundException {
 
-        if(customerRepository.existsById(customerID))
-            throw new RecordNotFoundException("employee with "+customerID+" does not exist");
-        customerRepository.deleteById(customerID);
+        if(customerRepository.existsById(id))
+            throw new RecordNotFoundException("employee with "+id+" does not exist");
+        customerRepository.deleteById(id);
     }
 }
 

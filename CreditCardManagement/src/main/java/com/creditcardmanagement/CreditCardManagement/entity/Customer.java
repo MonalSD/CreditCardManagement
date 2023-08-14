@@ -4,8 +4,10 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document("customer")
 public class Customer {
+
+
 
     //private String _id;
     @Id
@@ -21,7 +23,8 @@ public class Customer {
         // Empty no-arg constructor.
     }
 
-    public Customer(int customerID, String first, String last, String gender, String job, String dob) {
+    public Customer(ObjectId id,int customerID, String first, String last, String gender, String job, String dob) {
+        this.id = id;
         this.customerID = customerID;
         this.first = first;
         this.last = last;
@@ -36,6 +39,13 @@ public class Customer {
         this.gender = gender;
         this.job = job;
         this.dob = dob;
+    }
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public long getCustomerID() {
@@ -88,7 +98,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return String.format("Customer [customerID=%s, first=%s, last=%s, gender=%s, job=%s, dob=%s]", customerID, first, last, gender, job, dob);
+        return String.format("Customer [id = %s, customerID=%s, first=%s, last=%s, gender=%s, job=%s, dob=%s]", id, customerID, first, last, gender, job, dob);
     }
 }
 

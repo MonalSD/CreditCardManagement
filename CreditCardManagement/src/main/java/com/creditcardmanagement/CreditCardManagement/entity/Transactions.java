@@ -1,33 +1,57 @@
 package com.creditcardmanagement.CreditCardManagement.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document("Transactions")
+@Document("transaction")
 public class Transactions {
     @Id
-    private long transId;
+    private ObjectId id;
+    @Field("customer_id")
+    private String customerId;
+    @Field("trans_num")
+    private int transactionNum;
+    @Field("trans_date_trans_time")
     private String  transDatetransTime;
-    private long amount;
+    private long amt;
 
-    private long customerId;
     private String city;
     private String state;
+    @Field("city_population")
     private long cityPopulation;
     private String merchant;
     private String category;
     private String first;
     private String last;
     private String gender;
+    @Field("Job")
     private String job;
     private String dob;
 
-    public long getTransId() {
-        return transId;
+    public ObjectId getId() {
+        return id;
     }
 
-    public void setTransId(long transId) {
-        this.transId = transId;
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public long getTransactionNum() {
+        return transactionNum;
+    }
+
+    public void setTransactionNum(int transactionNum) {
+        this.transactionNum = transactionNum;
     }
 
     public String getTransDatetransTime() {
@@ -38,20 +62,12 @@ public class Transactions {
         this.transDatetransTime = transDatetransTime;
     }
 
-    public long getAmount() {
-        return amount;
+    public long getAmt() {
+        return amt;
     }
 
-    public void setAmount(long amount) {
-        this.amount = amount;
-    }
-
-    public long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(long customerId) {
-        this.customerId = customerId;
+    public void setAmt(long amt) {
+        this.amt = amt;
     }
 
     public String getCity() {
@@ -134,13 +150,32 @@ public class Transactions {
         this.dob = dob;
     }
 
+    public Transactions(ObjectId id, String customerId, int transactionNum, String transDatetransTime, long amt, String city, String state, long cityPopulation, String merchant, String category, String first, String last, String gender, String job, String dob) {
+        this.id = id;
+        this.customerId = customerId;
+        this.transactionNum = transactionNum;
+        this.transDatetransTime = transDatetransTime;
+        this.amt = amt;
+        this.city = city;
+        this.state = state;
+        this.cityPopulation = cityPopulation;
+        this.merchant = merchant;
+        this.category = category;
+        this.first = first;
+        this.last = last;
+        this.gender = gender;
+        this.job = job;
+        this.dob = dob;
+    }
+
     @Override
     public String toString() {
         return "Transactions{" +
-                "transId=" + transId +
+                "id=" + id +
+                ", customerId='" + customerId + '\'' +
+                ", transactionNum=" + transactionNum +
                 ", transDatetransTime='" + transDatetransTime + '\'' +
-                ", amount=" + amount +
-                ", customerId=" + customerId +
+                ", amt=" + amt +
                 ", city='" + city + '\'' +
                 ", state='" + state + '\'' +
                 ", cityPopulation=" + cityPopulation +
