@@ -1,5 +1,6 @@
 package com.creditcardmanagement.CreditCardManagement.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,6 +9,7 @@ public class Customer {
 
     //private String _id;
     @Id
+    private ObjectId id;
     private long customerID =-1;
     private String first;
     private String last;
