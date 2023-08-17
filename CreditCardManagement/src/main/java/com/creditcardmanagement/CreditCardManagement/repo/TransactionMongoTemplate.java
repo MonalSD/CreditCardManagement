@@ -1,20 +1,22 @@
 package com.creditcardmanagement.CreditCardManagement.repo;
 
 import com.creditcardmanagement.CreditCardManagement.dto.*;
+import com.creditcardmanagement.CreditCardManagement.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
 
-import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.mongodb.client.model.Aggregates.project;
-import static javax.management.Query.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
-
-public class TransactionMongoTemplate {
+@Repository
+public class TransactionMongoTemplate
+{
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -25,8 +27,8 @@ public class TransactionMongoTemplate {
         ProjectionOperation includes = project("total_amt").and("category").previousOperation();
         SortOperation sortByAmtDESC = sort(Sort.by(Sort.Direction.DESC,"total_amt"));
 
-        Aggregation aggregation = newAggregation(allCategory,groupByCategorySumAmount,sortByAmtDESC,includes);
-        AggregationResults<CategoryAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions");
+        Aggregation aggregation = newAggregation((AggregationOperation) allCategory,groupByCategorySumAmount,sortByAmtDESC,includes);
+        AggregationResults<CategoryAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions",CategoryAmount.class);
         List<CategoryAmount> result = groupResults.getMappedResults();
 
         return result;
@@ -40,7 +42,7 @@ public class TransactionMongoTemplate {
         SortOperation sortByAmtDESC = sort(Sort.by(Sort.Direction.DESC,"total_amt"));
 
         Aggregation aggregation = newAggregation(allMerchant,groupByMerchantSumAmount,sortByAmtDESC,includes);
-        AggregationResults<MerchantAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions");
+        AggregationResults<MerchantAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions",MerchantAmount.class);
         List<MerchantAmount> result = groupResults.getMappedResults();
 
         return result;
@@ -53,7 +55,7 @@ public class TransactionMongoTemplate {
         SortOperation sortByAmtDESC = sort(Sort.by(Sort.Direction.DESC,"total_amt"));
 
         Aggregation aggregation = newAggregation(allGender,groupByGenderSumAmount,sortByAmtDESC,includes);
-        AggregationResults<GenderAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions");
+        AggregationResults<GenderAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions",GenderAmount.class);
         List<GenderAmount> result = groupResults.getMappedResults();
 
         return result;
@@ -66,7 +68,7 @@ public class TransactionMongoTemplate {
         SortOperation sortByAmtDESC = sort(Sort.by(Sort.Direction.DESC,"total_amt"));
 
         Aggregation aggregation = newAggregation(allJob,groupByJobSumAmount,sortByAmtDESC,includes);
-        AggregationResults<JobAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions");
+        AggregationResults<JobAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions", JobAmount.class);
         List<JobAmount> result = groupResults.getMappedResults();
 
         return result;
@@ -79,7 +81,7 @@ public class TransactionMongoTemplate {
         SortOperation sortByAmtDESC = sort(Sort.by(Sort.Direction.DESC,"total_amt"));
 
         Aggregation aggregation = newAggregation(allCity,groupByCitySumAmount,sortByAmtDESC,includes);
-        AggregationResults<CityAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions");
+        AggregationResults<CityAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions", CityAmount.class);
         List<CityAmount> result = groupResults.getMappedResults();
 
         return result;
@@ -93,12 +95,25 @@ public class TransactionMongoTemplate {
         SortOperation sortByAmtDESC = sort(Sort.by(Sort.Direction.DESC,"total_amt"));
 
         Aggregation aggregation = newAggregation(allState,groupByStateSumAmount,sortByAmtDESC,includes);
-        AggregationResults<StateAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions");
+        AggregationResults<StateAmount> groupResults = mongoTemplate.aggregate(aggregation,"transactions", StateAmount.class);
         List<StateAmount> result = groupResults.getMappedResults();
         return result;
     }
 
-    public List<AmountSpending> getSpendingHistoryByAmount(double low, double high) {
+    public List<AmountSpending> getSpendingHistoryByAmount(double lowValue, double highValue) {
+        Criteria amountCriteria = Criteria.where("amt").gte(lowValue).lte(highValue);
+        Query query = new Query(amountCriteria).with(Sort.by(Sort.Direction.DESC,"amt"));
+        List<AmountSpending> amountSpendingList = new ArrayList<>();
+        List<Transactions>transactions = mongoTemplate.find(query,Transactions.class);
+
+        for(Transactions transaction: transactions)
+        {
+            AmountSpending amountSpending = new AmountSpending();
+            amountSpending.setCustomerId(transaction.getCustomerId());
+            amountSpending.setAmt(transaction.getAmt());
+            amountSpendingList.add(amountSpending);
+        }
+        return amountSpendingList;
     }
 
     public List<TopMerchant> getTopMerchants(int limit) {
@@ -110,7 +125,7 @@ public class TransactionMongoTemplate {
         SortOperation sortByAmtDESC = sort(Sort.by(Sort.Direction.DESC,"total_amt"));
 
         Aggregation aggregation = newAggregation(allMerchant,groupByTopMerchantSumAmount,sortByAmtDESC,includes);
-        AggregationResults<TopMerchant> groupResults = mongoTemplate.aggregate(aggregation,"transactions");
+        AggregationResults<TopMerchant> groupResults = mongoTemplate.aggregate(aggregation,"transactions", TopMerchant.class);
         List<TopMerchant> result = groupResults.getMappedResults();
         return result;
     }

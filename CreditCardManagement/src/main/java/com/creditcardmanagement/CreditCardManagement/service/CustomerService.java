@@ -1,59 +1,90 @@
 package com.creditcardmanagement.CreditCardManagement.service;
 
 import com.creditcardmanagement.CreditCardManagement.entity.Customer;
-import com.creditcardmanagement.CreditCardManagement.exception.RecordExistsException;
-import com.creditcardmanagement.CreditCardManagement.exception.RecordNotFoundException;
+import com.creditcardmanagement.CreditCardManagement.exception.CustomerAlreadyExists;
 import com.creditcardmanagement.CreditCardManagement.repo.CustomerRepository;
-import org.bson.types.ObjectId;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.ObjectError;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CustomerService {
+
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerRepository repo;
 
-    // Insert an employee.
-    public Customer insertCustomer(Customer customer) throws RecordExistsException {
-        if(customerRepository.existsById(customer.getId()))
-            throw new RecordExistsException("Customer with "+customer.getCustomerID()+"already exists");
-        long count = this.customerRepository.count();
-        customer.setCustomerID(count+1);
-        Customer savedCustomer = customerRepository.save(customer);
-        System.out.printf("There are now %d employees\n", customerRepository.count());
-        return  savedCustomer;
+    public Customer addCustomer(@Valid Customer c) throws CustomerAlreadyExists {
+        if (repo.existsById((c.getId())))
+            throw new CustomerAlreadyExists("Customer with " + c.getCustomerId() + " already exists");
+        return repo.save(c);
     }
 
-    // Get all employees.
-    public List<Customer> getAllCustomer()
-    {
-        return this.customerRepository.findAll();
+
+
+    public long getCount(){
+        return this.repo.count();
     }
-    public Customer getCustomerById(ObjectId id) throws RecordNotFoundException {
-        return customerRepository.findById(id)
-                .orElseThrow(()->new RecordNotFoundException("Customer with "+id+" does not exist"));
+    public List<Customer>getAllCustomer(){
+        return this.repo.findAll();
+    }
+    public Customer updateCustomer(int customerId, @Valid Customer dataToUpdate) {
+        Customer existingCustomer = repo.findByCustomerId(customerId);
+        if (existingCustomer != null) {
+
+            // Ensures customerId is unchanged
+            dataToUpdate.setCustomerId(existingCustomer.getCustomerId());
+            // It takes the original customerId
+
+            return repo.save(dataToUpdate);
+        } else {
+            System.out.println("Customer not found");
+            return null;
+        }
     }
 
-    //Update Customer
-    public void updateCustomer( Customer custToUpdate) throws RecordNotFoundException {
-        System.out.println("UPDATE "+custToUpdate.getId());
-        if(! customerRepository.existsById(custToUpdate.getId()))
-            throw new RecordNotFoundException("Customer with "+custToUpdate.getId()+" does not exist");
-        customerRepository.save(custToUpdate);
+    public void deleteCustomer(int customerId){
+        Customer c =repo.findByCustomerId(customerId);
+        if(c!=null){
+            repo.save(c);
+        }
+        else
+            System.out.println("not found");
     }
 
-    //Delete Customer
-    public void deleteCustomer(ObjectId id) throws RecordNotFoundException {
-
-        if(customerRepository.existsById(id))
-            throw new RecordNotFoundException("employee with "+id+" does not exist");
-        customerRepository.deleteById(id);
+    public Customer getCustomerById(int  customerId)  {
+        System.out.println(customerId + "Printing");
+        Customer c = repo.findByCustomerId(customerId);
+        return c;
     }
+
+    public List<Customer> getCustomerByName(String customerName)  {
+        System.out.println(customerName+ " Printing from service class");
+        List<Customer> customerList = repo.findByFirstName(customerName);
+        return customerList;
+    }
+    public List<Customer> getCustomerByGender(String customerGender)  {
+
+        List<Customer> customerList = repo.findByGender(customerGender);
+        return customerList;
+    }
+    public List<Customer> getCustomerByJob(String customerJob)  {
+
+        List<Customer> customerList = repo.findByJob(customerJob);
+        return customerList;
+    }
+    public List<Customer> getCustomerByLastName(String customerLastName)  {
+        System.out.println(customerLastName + " Printing from service class");
+        List<Customer> customerList = repo.findByLastName(customerLastName);
+        return customerList;
+    }
+
+
+    public boolean existsByCustomerId(int customerId) {
+        return repo.existsByCustomerId(customerId);
+    }
+
+
+
 }
-
-

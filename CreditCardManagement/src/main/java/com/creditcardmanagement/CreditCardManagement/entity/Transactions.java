@@ -1,5 +1,6 @@
 package com.creditcardmanagement.CreditCardManagement.entity;
 
+import jakarta.validation.constraints.NotBlank;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,23 +11,28 @@ public class Transactions {
     @Id
     private ObjectId id;
     @Field("customer_id")
-    private String customerId;
+    private int customerId;
     @Field("trans_num")
+    @NotBlank(message = "Transaction number is required")
     private int transactionNum;
     @Field("trans_date_trans_time")
     private String  transDatetransTime;
     private long amt;
-
+    @NotBlank(message = "Enter city")
     private String city;
+    @NotBlank(message = "Enter state")
     private String state;
     @Field("city_population")
     private long cityPopulation;
     private String merchant;
+    @NotBlank(message = "Enter category")
     private String category;
     private String first;
     private String last;
+    @NotBlank(message = "Enter Gender")
     private String gender;
     @Field("Job")
+    @NotBlank(message = "Enter Job")
     private String job;
     private String dob;
 
@@ -38,11 +44,11 @@ public class Transactions {
         this.id = id;
     }
 
-    public String getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(String customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 
@@ -150,7 +156,7 @@ public class Transactions {
         this.dob = dob;
     }
 
-    public Transactions(ObjectId id, String customerId, int transactionNum, String transDatetransTime, long amt, String city, String state, long cityPopulation, String merchant, String category, String first, String last, String gender, String job, String dob) {
+    public Transactions(ObjectId id, int customerId, int transactionNum, String transDatetransTime, long amt, String city, String state, long cityPopulation, String merchant, String category, String first, String last, String gender, String job, String dob) {
         this.id = id;
         this.customerId = customerId;
         this.transactionNum = transactionNum;

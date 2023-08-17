@@ -3,6 +3,7 @@ package com.creditcardmanagement.CreditCardManagement.entity;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document("customer")
 public class Customer {
@@ -11,8 +12,9 @@ public class Customer {
 
     //private String _id;
     @Id
-    private ObjectId id;
-    private long customerID =-1;
+    ObjectId id;
+    @Field("customer_id")
+    private int customerId;
     private String first;
     private String last;
     private String gender;
@@ -23,9 +25,9 @@ public class Customer {
         // Empty no-arg constructor.
     }
 
-    public Customer(ObjectId id,int customerID, String first, String last, String gender, String job, String dob) {
+    public Customer(ObjectId id,int customerId, String first, String last, String gender, String job, String dob) {
         this.id = id;
-        this.customerID = customerID;
+        this.customerId = customerId;
         this.first = first;
         this.last = last;
         this.gender = gender;
@@ -48,12 +50,12 @@ public class Customer {
         this.id = id;
     }
 
-    public long getCustomerID() {
-        return customerID;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerID(long customerID) {
-        this.customerID = customerID;
+    public void setCustomerId(int customerID) {
+        this.customerId = customerId;
     }
 
     public String getFirst() {
@@ -98,7 +100,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return String.format("Customer [id = %s, customerID=%s, first=%s, last=%s, gender=%s, job=%s, dob=%s]", id, customerID, first, last, gender, job, dob);
+        return String.format("Customer [id = %s, customerId=%s, first=%s, last=%s, gender=%s, job=%s, dob=%s]", id, customerId, first, last, gender, job, dob);
     }
 }
 

@@ -18,7 +18,7 @@ public class TransactionsController {
     @RequestMapping(value="/merchant",method = RequestMethod.GET)
     public List<MerchantAmount> getAmountForMerchant()
     {
-        return transactionsService.getmerchantAmount();
+        return transactionsService.getMerchantAmount();
     }
     @RequestMapping(value="/city",method = RequestMethod.GET)
     public List<CityAmount> getAmountForCity()
