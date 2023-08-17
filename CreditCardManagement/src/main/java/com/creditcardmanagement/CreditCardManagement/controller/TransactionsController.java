@@ -1,41 +1,65 @@
 package com.creditcardmanagement.CreditCardManagement.controller;
 
+import com.creditcardmanagement.CreditCardManagement.dto.*;
 import com.creditcardmanagement.CreditCardManagement.entity.Transactions;
 import com.creditcardmanagement.CreditCardManagement.service.TransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
+@CrossOrigin
 public class TransactionsController {
     @Autowired
     private TransactionsService transactionsService;
-
-    @GetMapping("/merchant/{customerMerchant}")
-    public ResponseEntity<List<Transactions>> getCustomerByMerchant(@PathVariable String customerMerchant){
-        List<Transactions> customerList = transactionsService.getSpendingHistoryByMerchant(customerMerchant);
-        return ResponseEntity.ok(customerList);
-    }
-    @GetMapping("/city/{customerCity}")
-    public ResponseEntity<List<Transactions>> getCustomerByCity(@PathVariable String customerCity){
-        List<Transactions> customerList = transactionsService.getSpendingHistoryByCity(customerCity);
-        return ResponseEntity.ok(customerList);
-    }
-    @GetMapping("/transactionStatus/{state}")
-    public ResponseEntity<List<Transactions>> getCustomerByState(@PathVariable String state){
-        List<Transactions> customerList = transactionsService.getSpendingHistoryByState(state);
-        return ResponseEntity.ok(customerList);
-    }
-    @GetMapping("/{transNum}")
-    public List<Transactions> getAllByTransactionNum()
+    @RequestMapping(value="/merchant",method = RequestMethod.GET)
+    public List<MerchantAmount> getAmountForMerchant()
     {
-        return transactionsService.getAllByTransactionNum();
+        return transactionsService.getmerchantAmount();
+    }
+    @RequestMapping(value="/city",method = RequestMethod.GET)
+    public List<CityAmount> getAmountForCity()
+    {
+        return transactionsService.getSpendingHistoryByCity();
+    }
+    @RequestMapping(value="/Job",method = RequestMethod.GET)
+    public List<JobAmount> getAmountForJob()
+    {
+        return transactionsService.getSpendingHistoryByJob();
+    }
+    @RequestMapping(value="/category",method = RequestMethod.GET)
+    public List<CategoryAmount> getCustomerByCategory()
+    {
+        return transactionsService.getSpendingHistoryByCategory();
+    }
+    @GetMapping("/city_population")
+    public <city_population> List<Transactions> getPopulationByCity(String city)
+    {
+
+        return transactionsService.getPopulationByCity(city);
+    }
+    @GetMapping("/{state}")
+    public List<StateAmount> getCustomerByState()
+    {
+        return transactionsService.getSpendingHistoryByState();
+    }
+    @GetMapping("/total_amt/{gender}")
+    public List<GenderAmount> getCustomerByGender()
+    {
+        return transactionsService.getSpendingHistoryByGender();
+    }
+    @GetMapping("/spendingByAmount/{low}/{high}")
+    public List<AmountSpending> getSpendingByAmount(@PathVariable double low,@PathVariable double high)
+    {
+        return transactionsService.getSpendingHistoryByAmount(low,high);
+    }
+    @GetMapping("/topMerchants")
+    public List<TopMerchant> getTopMerchants(@RequestParam int limit)
+    {
+        return transactionsService.getTopMerchants(limit);
     }
 
 }
