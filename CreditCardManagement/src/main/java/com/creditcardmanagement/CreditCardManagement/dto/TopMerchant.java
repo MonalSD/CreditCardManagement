@@ -54,4 +54,7 @@ public class TopMerchant {
         this.state = state;
         this.cityPopulation = cityPopulation;
     }
+
+    public TopMerchant() {
+    }
 }

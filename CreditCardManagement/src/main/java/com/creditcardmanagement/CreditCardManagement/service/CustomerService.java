@@ -15,10 +15,25 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public Customer addCustomer(@Valid Customer c) throws CustomerAlreadyExists {
-        if (customerRepository.existsById((c.getId())))
-            throw new CustomerAlreadyExists("Customer with " + c.getCustomerId() + " already exists");
-        return customerRepository.save(c);
+    public Customer addCustomer(Customer customer) throws CustomerAlreadyExists {
+        if (!isCustomerIdValid(String.valueOf(customer.getCustomerId()))) {
+            throw new InvalidDataTypeException(String.valueOf(customer.getCustomerId()), "Invalid customerId. Please provide a valid integer value.");
+        }
+
+        if (customerRepository.existsByCustomerId(customer.getCustomerId())) {
+            throw new CustomerAlreadyExists("Customer with ID " + customer.getCustomerId() + " already exists.");
+        }
+
+        // Add the customer
+        return customerRepository.save(customer);
+    }
+    private boolean isCustomerIdValid(String customerId) {
+        try {
+            int parsedCustomerId = Integer.parseInt(customerId);
+            return parsedCustomerId > 0;
+        } catch (NumberFormatException e) {
+            return false; // Parsing failed, not a valid integer
+        }
     }
 
 
@@ -29,15 +44,17 @@ public class CustomerService {
     public List<Customer>getAllCustomer(){
         return this.customerRepository.findAll();
     }
-    public Customer updateCustomer(int customerId, @Valid Customer dataToUpdate) {
+    public Customer updateCustomer(int customerId, Customer dataToUpdate) {
         Customer existingCustomer = customerRepository.findByCustomerId(customerId);
         if (existingCustomer != null) {
+            existingCustomer.setCustomerId(dataToUpdate.getCustomerId());
+            existingCustomer.setFirst(dataToUpdate.getFirst());
+            existingCustomer.setLast(dataToUpdate.getLast());
+            existingCustomer.setGender(dataToUpdate.getGender());
+            existingCustomer.setJob(dataToUpdate.getJob());
+            existingCustomer.setDob(dataToUpdate.getDob());
 
-            // Ensures customerId is unchanged
-            dataToUpdate.setCustomerId(existingCustomer.getCustomerId());
-            // It takes the original customerId
-
-            return customerRepository.save(dataToUpdate);
+            return customerRepository.save(existingCustomer);
         } else {
             System.out.println("Customer not found");
             return null;
@@ -47,7 +64,7 @@ public class CustomerService {
     public void deleteCustomer(int customerId){
         Customer c =customerRepository.findByCustomerId(customerId);
         if(c!=null){
-            customerRepository.save(c);
+            customerRepository.delete(c);
         }
         else
             System.out.println("not found");

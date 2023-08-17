@@ -2,6 +2,7 @@ package com.creditcardmanagement.CreditCardManagement.dto;
 
 public class AmountSpending {
     private int customerId;
+
     private double amt;
 
     public int getCustomerId() {

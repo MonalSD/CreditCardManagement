@@ -121,11 +121,12 @@ public class TransactionMongoTemplate
                 .first("state").as("state")
                 .first("city_population").as("cityPopulation");
         MatchOperation allMerchant = match(new Criteria("merchant").exists(true));
-        ProjectionOperation includes =project("total_amt").andInclude("city").andInclude("state").andInclude("cityPopulation");
-        SortOperation sortByAmtDESC = sort(Sort.by(Sort.Direction.DESC,"total_amt"));
+        ProjectionOperation includes = project("total_amt").andInclude("city").andInclude("state").andInclude("cityPopulation").and("merchant").previousOperation();
+        SortOperation sortByAmtDESC = sort(Sort.by(Sort.Direction.DESC, "total_amt"));
 
-        Aggregation aggregation = newAggregation(allMerchant,groupByTopMerchantSumAmount,sortByAmtDESC,includes);
-        AggregationResults<TopMerchant> groupResults = mongoTemplate.aggregate(aggregation,"transactions", TopMerchant.class);
+        Aggregation aggregation = newAggregation(allMerchant, groupByTopMerchantSumAmount, sortByAmtDESC, includes,Aggregation.limit(limit));
+
+        AggregationResults<TopMerchant> groupResults = mongoTemplate.aggregate(aggregation, "transaction",TopMerchant.class);
         List<TopMerchant> result = groupResults.getMappedResults();
         return result;
     }

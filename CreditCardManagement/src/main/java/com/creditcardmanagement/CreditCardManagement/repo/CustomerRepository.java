@@ -16,7 +16,7 @@ public interface CustomerRepository extends MongoRepository <Customer, ObjectId>
 
     List<Customer> findByFirst(String customerFirst);
     List<Customer> findByLast(String customerLast);
-    //@Query("{customerId:?0}")
+    @Query("{customerId:?0}")
     public Customer findByCustomerId(int customerId);
 
 

@@ -27,6 +27,17 @@ public class CreditCardManagementApplication implements CommandLineRunner{
 		SpringApplication.run(CreditCardManagementApplication.class, args);
 		System.out.println("Application Loaded");
 	}
+	@Autowired
+	private CustomerRepository customerRepository;
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedMethods("GET","POST","PUT","DELETE")
+						.allowedOrigins("*");
+			}
+		};
+	}
 
 	@Override
 	public void run(String... args) throws Exception {
