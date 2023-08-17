@@ -57,7 +57,7 @@ public class CustomerRestController
     }
     @GetMapping("/name/{customerName}")
     public ResponseEntity<?> getCustomerByName(@PathVariable String customerName) {
-        List<Customer> customerList = customerService.getCustomerByName(customerName);
+        List<Customer> customerList = customerService.getCustomerByFirst(customerName);
         if (customerList.isEmpty()) {
             ErrorResponse errorResponse = new ErrorResponse("No customers found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
@@ -66,7 +66,7 @@ public class CustomerRestController
     }
     @GetMapping("/lastname/{customerLastName}")
     public ResponseEntity<?> getCustomerByLastName(@PathVariable String customerLastName) {
-        List<Customer> customerList = customerService.getCustomerByLastName(customerLastName);
+        List<Customer> customerList = customerService.getCustomerByLast(customerLastName);
         if (customerList.isEmpty()) {
             ErrorResponse errorResponse = new ErrorResponse("No customers found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);

@@ -1,7 +1,7 @@
 package com.creditcardmanagement.CreditCardManagement.service;
 
 import com.creditcardmanagement.CreditCardManagement.entity.Customer;
-import com.creditcardmanagement.CreditCardManagement.exception.CustomerAlreadyExists;
+import com.creditcardmanagement.CreditCardManagement.exception.*;
 import com.creditcardmanagement.CreditCardManagement.repo.CustomerRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,31 +13,31 @@ import java.util.List;
 public class CustomerService {
 
     @Autowired
-    private CustomerRepository repo;
+    private CustomerRepository customerRepository;
 
     public Customer addCustomer(@Valid Customer c) throws CustomerAlreadyExists {
-        if (repo.existsById((c.getId())))
+        if (customerRepository.existsById((c.getId())))
             throw new CustomerAlreadyExists("Customer with " + c.getCustomerId() + " already exists");
-        return repo.save(c);
+        return customerRepository.save(c);
     }
 
 
 
     public long getCount(){
-        return this.repo.count();
+        return this.customerRepository.count();
     }
     public List<Customer>getAllCustomer(){
-        return this.repo.findAll();
+        return this.customerRepository.findAll();
     }
     public Customer updateCustomer(int customerId, @Valid Customer dataToUpdate) {
-        Customer existingCustomer = repo.findByCustomerId(customerId);
+        Customer existingCustomer = customerRepository.findByCustomerId(customerId);
         if (existingCustomer != null) {
 
             // Ensures customerId is unchanged
             dataToUpdate.setCustomerId(existingCustomer.getCustomerId());
             // It takes the original customerId
 
-            return repo.save(dataToUpdate);
+            return customerRepository.save(dataToUpdate);
         } else {
             System.out.println("Customer not found");
             return null;
@@ -45,9 +45,9 @@ public class CustomerService {
     }
 
     public void deleteCustomer(int customerId){
-        Customer c =repo.findByCustomerId(customerId);
+        Customer c =customerRepository.findByCustomerId(customerId);
         if(c!=null){
-            repo.save(c);
+            customerRepository.save(c);
         }
         else
             System.out.println("not found");
@@ -55,34 +55,34 @@ public class CustomerService {
 
     public Customer getCustomerById(int  customerId)  {
         System.out.println(customerId + "Printing");
-        Customer c = repo.findByCustomerId(customerId);
+        Customer c = customerRepository.findByCustomerId(customerId);
         return c;
     }
 
-    public List<Customer> getCustomerByName(String customerName)  {
+    public List<Customer> getCustomerByFirst(String customerName)  {
         System.out.println(customerName+ " Printing from service class");
-        List<Customer> customerList = repo.findByFirstName(customerName);
+        List<Customer> customerList = customerRepository.findByFirst(customerName);
         return customerList;
     }
     public List<Customer> getCustomerByGender(String customerGender)  {
 
-        List<Customer> customerList = repo.findByGender(customerGender);
+        List<Customer> customerList = customerRepository.findByGender(customerGender);
         return customerList;
     }
     public List<Customer> getCustomerByJob(String customerJob)  {
 
-        List<Customer> customerList = repo.findByJob(customerJob);
+        List<Customer> customerList = customerRepository.findByJob(customerJob);
         return customerList;
     }
-    public List<Customer> getCustomerByLastName(String customerLastName)  {
+    public List<Customer> getCustomerByLast(String customerLastName)  {
         System.out.println(customerLastName + " Printing from service class");
-        List<Customer> customerList = repo.findByLastName(customerLastName);
+        List<Customer> customerList = customerRepository.findByLast(customerLastName);
         return customerList;
     }
 
 
     public boolean existsByCustomerId(int customerId) {
-        return repo.existsByCustomerId(customerId);
+        return customerRepository.existsByCustomerId(customerId);
     }
 
 
