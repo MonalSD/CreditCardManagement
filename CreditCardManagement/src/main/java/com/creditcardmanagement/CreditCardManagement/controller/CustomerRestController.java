@@ -36,6 +36,7 @@ public class CustomerRestController
             }
             return ResponseEntity.badRequest().body(errorResponse);
         }
+
         try {
             Customer savedCustomer = customerService.addCustomer(customer);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedCustomer);
